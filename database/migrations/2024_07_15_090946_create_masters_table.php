@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('name');
             $table->date('year');
             $table->string('location');
+            $table->string('file')->nullable();
             $table->longText('description')->nullable();
             $table->timestamps();
         });

@@ -14,6 +14,7 @@ class Master extends Model
         'name',
         'year',
         'location',
+        'file',
         'description'
     ];
 

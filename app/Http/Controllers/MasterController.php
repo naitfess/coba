@@ -27,19 +27,8 @@ class MasterController extends Controller
     }
 
     public function store(Request $request)
-    {   
-        
-        // if($request->hasFile('upload')){
-        //     $originName = $request->file('upload')->getClientOriginalName();
-        //     $fileName = pathinfo($originName, PATHINFO_FILENAME);
-        //     $extension = $request->file('upload')->getClientOriginalExtension();
-        //     $fileName = $fileName.'_'.time().'.'.$extension;
-        //     $request->file('upload')->move(public_path('media'), $fileName);
+    {         
 
-        //     $url = asset('media/'.$fileName);
-        //     return response()->json(['filename' => $fileName, 'uploaded' => 1,'url' => $url]);
-        // }
-        
         $request->validate([
             'select-event' => 'required',
         ]);
@@ -49,53 +38,66 @@ class MasterController extends Controller
                 'name' => 'required|unique:masters',
                 'year' => 'required',
                 'location' => 'required',
+                'file' => 'nullable|mimes:png,jpg,pdf,jpeg|max:1024',
                 'description' => 'nullable',
             ]);
+        }
+
+        if($request->hasFile('file')){
+            $originName = $request->file('file')->getClientOriginalName();
+            $fileName = pathinfo($originName, PATHINFO_FILENAME);
+            $extension = $request->file('file')->getClientOriginalExtension();
+            $fileName = $fileName.'_'.time().'.'.$extension;
+            $request->file('file')->move(public_path('media'), $fileName);
+
+            $file = asset('media/'.$fileName);
+            $validatedData['file'] = $file;
+            // return response()->json(['filename' => $fileName, 'uploaded' => 1,'url' => $file]);
         }
 
         $request->validate([
         'category_id' => 'required',
         ]);
     
-    if($request['category_id'] == '1'){
-        $validatedDataDetail = $request->validate([
-            'swimming-name' => [
-                'required',
-                Rule::unique('swimmings', 'name')->where('master_id', $request->input('select-event')),
-            ],
-            'swimming-distance' => 'required',
-            'swimming-stroke' => 'required',
-        ]);
-        if(isset($validatedData)){
-            $master = Master::create($validatedData);
+        if($request['category_id'] == '1'){
+            $validatedDataDetail = $request->validate([
+                'swimming-name' => [
+                    'required',
+                    Rule::unique('swimmings', 'name')->where('master_id', $request->input('select-event')),
+                ],
+                'swimming-distance' => 'required',
+                'swimming-stroke' => 'required',
+            ]);
+            if(isset($validatedData)){
+                $master = Master::create($validatedData);
+            }
+            Swimming::create([
+                'name' => $validatedDataDetail['swimming-name'],
+                'distance' => $validatedDataDetail['swimming-distance'],
+                'stroke' => $validatedDataDetail['swimming-stroke'],
+                'master_id' => $master->id ?? $request['select-event'],
+                'category_id' => $request['category_id'],
+            ]);
         }
-        Swimming::create([
-            'name' => $validatedDataDetail['swimming-name'],
-            'distance' => $validatedDataDetail['swimming-distance'],
-            'stroke' => $validatedDataDetail['swimming-stroke'],
-            'master_id' => $master->id ?? $request['select-event'],
-            'category_id' => $request['category_id'],
-        ]);
-    }
     
-    if($request['category_id'] == '2'){
-        $validatedDataDetail = $request->validate([
-            'football-name' => [
-                'required',
-                Rule::unique('footballs', 'name')->where('master_id', $request->input('select-event')),
-            ],
-            'football-category_umur' => 'required',
-        ]);
-        if(isset($validatedData)){
-            $master = Master::create($validatedData);
+        if($request['category_id'] == '2'){
+            $validatedDataDetail = $request->validate([
+                'football-name' => [
+                    'required',
+                    Rule::unique('footballs', 'name')->where('master_id', $request->input('select-event')),
+                ],
+                'football-category_umur' => 'required',
+            ]);
+            if(isset($validatedData)){
+                $master = Master::create($validatedData);
+            }
+            Football::create([
+                'name' => $validatedDataDetail['football-name'],
+                'category_umur' => $validatedDataDetail['football-category_umur'],
+                'master_id' => $master->id ?? $request['select-event'],
+                'category_id' => $request['category_id'],
+            ]);
         }
-        Football::create([
-            'name' => $validatedDataDetail['football-name'],
-            'category_umur' => $validatedDataDetail['football-category_umur'],
-            'master_id' => $master->id ?? $request['select-event'],
-            'category_id' => $request['category_id'],
-        ]);
-    }
         
         if($request['category_id'] == '3'){
             $validatedDataDetail = $request->validate([
