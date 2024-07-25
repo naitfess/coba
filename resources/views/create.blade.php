@@ -5,15 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     @vite('resources/css/app.css')
-    <link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/42.0.1/ckeditor5.css">
+    <script src="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.snow.css" rel="stylesheet">
     <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
+    <title>Document</title>
     <style>
         .form-container {
             display: none;
-        }
-
-        .ck-editor__editable_inline{
-            height: 450px;
         }
     </style>
 </head>
@@ -102,15 +100,14 @@
                         <p class="mt-2 text-sm text-red-600 dark:text-red-500">{{ $message }}</p>
                         @enderror
                         
-                        <div class="sm:col-span-4 toggle-active">
-                            <label for="description" class="block text-sm font-medium leading-6 text-gray-900">Description</label>
-                            <div class="mt-2">
-                                <textarea id="editor" name="description">{{ old('description') }}</textarea>
-                            </div>
+                        <div class="sm:col-span-4 toggle-active mb-10">
+                            <label for="description" class="block text-sm font-medium leading-6 text-gray-900 mb-2">Description</label>
+                            <div id="editor"></div>
+                            <input type="hidden" name="description" id="hiddenInput">       
                         </div>
-                        {{-- @error('location')
+                        @error('description')
                         <p class="mt-2 text-sm text-red-600 dark:text-red-500">{{ $message }}</p>
-                        @enderror --}}
+                        @enderror
             
                         <div class="sm:col-span-3">
                             <label for="category_id" class="block text-sm font-medium leading-6 text-gray-900">Competition Category</label>
@@ -233,17 +230,28 @@
       </div>
     </main>
   </div>
-<script src="https://cdn.ckeditor.com/ckeditor5/40.0.0/classic/ckeditor.js"></script>
 <script>
-    ClassicEditor
-    .create( document.querySelector( '#editor' ),{
-        ckfinder: {
-            uploadUrl: "{{ route('ckfinder.upload', ['_token'=>csrf_token()]) }}"
+    const quill = new Quill('#editor', {
+        theme: 'snow',
+        modules: {
+        toolbar: [
+            [{ header: [1, 2, 3, 4, 5, 6, false] }],
+            [{ font: [] }],
+            ["bold", "italic"],
+            ["link", "blockquote", "code-block", "image"],
+            [{ list: "ordered" }, { list: "bullet" }],
+            [{ script: "sub" }, { script: "super" }],
+            [{ color: [] }, { background: [] }],
+        ]
         },
-    } )
-    .catch( error => {
-        console.log( error );
-    } );
+    });
+
+    var form = document.querySelector("form");
+    var hiddenInput = document.querySelector('#hiddenInput');
+
+    form.addEventListener('submit', function(e){
+        hiddenInput.value = quill.root.innerHTML;
+    });
 </script>
 <script>
     function showEvent() {

@@ -14,7 +14,6 @@ Route::get('/', function () {
     ]);
 });
 
-Route::post('/ckfinder/upload', [MasterController::class, 'store'])->name('ckfinder.upload');
 Route::resource('/dashboard', MasterController::class)
     ->parameters([
         'dashboard' => 'master'
