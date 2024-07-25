@@ -5,9 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     @vite('resources/css/app.css')
+    <script src="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.snow.css" rel="stylesheet">
     <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.1/dist/cdn.min.js"></script>
     <title>Document</title>
+    <style>
+      .form-container {
+          display: none;
+      }
+  </style>
 </head>
 <body class="h-full">
 <div class="min-h-full">
@@ -73,6 +80,15 @@
                             <input id="location"  value="{{ $master->location }}" name="location" type="text" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                             </div>
                         </div>
+
+                        <div class="sm:col-span-4 toggle-active mb-10">
+                          <label for="description" class="block text-sm font-medium leading-6 text-gray-900 mb-2">Description</label>
+                          <div id="editor">{!!  $master->description !!}</div>
+                          <input type="hidden" name="description" id="hiddenInput">       
+                        </div>
+                        @error('description')
+                        <p class="mt-2 text-sm text-red-600 dark:text-red-500">{{ $message }}</p>
+                        @enderror
                     </div>
                 </div>
             </div>
@@ -84,5 +100,28 @@
       </div>
     </main>
   </div>  
+  <script>
+    const quill = new Quill('#editor', {
+        theme: 'snow',
+        modules: {
+        toolbar: [
+            [{ header: [1, 2, 3, 4, 5, 6, false] }],
+            [{ font: [] }],
+            ["bold", "italic"],
+            ["link", "blockquote", "code-block", "image"],
+            [{ list: "ordered" }, { list: "bullet" }],
+            [{ script: "sub" }, { script: "super" }],
+            [{ color: [] }, { background: [] }],
+        ]
+        },
+    });
+
+    var form = document.querySelector("form");
+    var hiddenInput = document.querySelector('#hiddenInput');
+
+    form.addEventListener('submit', function(e){
+        hiddenInput.value = quill.root.innerHTML;
+    });
+</script>
 </body>
 </html>

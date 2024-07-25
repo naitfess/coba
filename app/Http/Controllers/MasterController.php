@@ -28,21 +28,17 @@ class MasterController extends Controller
 
     public function store(Request $request)
     {   
-
-        // if($request->hasFile('upload')){
-        //     return dd('ada');
-        // }
         
-        if($request->hasFile('upload')){
-            $originName = $request->file('upload')->getClientOriginalName();
-            $fileName = pathinfo($originName, PATHINFO_FILENAME);
-            $extension = $request->file('upload')->getClientOriginalExtension();
-            $fileName = $fileName.'_'.time().'.'.$extension;
-            $request->file('upload')->move(public_path('media'), $fileName);
+        // if($request->hasFile('upload')){
+        //     $originName = $request->file('upload')->getClientOriginalName();
+        //     $fileName = pathinfo($originName, PATHINFO_FILENAME);
+        //     $extension = $request->file('upload')->getClientOriginalExtension();
+        //     $fileName = $fileName.'_'.time().'.'.$extension;
+        //     $request->file('upload')->move(public_path('media'), $fileName);
 
-            $url = asset('media/'.$fileName);
-            return response()->json(['filename' => $fileName, 'uploaded' => 1,'url' => $url]);
-        }
+        //     $url = asset('media/'.$fileName);
+        //     return response()->json(['filename' => $fileName, 'uploaded' => 1,'url' => $url]);
+        // }
         
         $request->validate([
             'select-event' => 'required',
@@ -142,24 +138,13 @@ class MasterController extends Controller
         ]);
     }
 
-    // public function update(MasterUpdateRequest $request, Master $master): MasterResource
-    // {   
-    //     $master = Master::where('id', $master->id);
-    //     if(!$master){
-    //         dd('error);
-    //     }
-
-    //     $data = $request->validated();
-    //     $master->update($data);
-    //     return redirect('/dashboard')->with('success', 'Data berhasil diubah');
-    // }
-
     public function update(Request $request, Master $master)
     {   
         $validatedData = $request->validate([
             'name' => 'required',
             'year' => 'required',
             'location' => 'required',
+            'description' => 'nullable',
         ]);
 
         Master::where('id', $master->id)
