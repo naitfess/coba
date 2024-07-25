@@ -22,5 +22,5 @@ Route::resource('/dashboard/swimming', SwimmingController::class);
 Route::resource('/dashboard/football', FootballController::class);
 Route::resource('/dashboard/badminton', BadmintonController::class);
 
-'tes coba2';
+'tes coba4';
 
