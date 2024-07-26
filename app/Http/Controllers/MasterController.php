@@ -8,10 +8,6 @@ use App\Models\Swimming;
 use App\Models\Badminton;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
-use App\Http\Resources\MasterResource;
-use App\Http\Requests\MasterUpdateRequest;
-use Illuminate\Http\Exceptions\HttpResponseException;
-
 class MasterController extends Controller
 {
     public function index()
