@@ -104,7 +104,7 @@
                             <div class="sm:col-span-4 toggle-active">                                
                                 <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white" for="file_input">Upload file</label>
                                 <input name="file" class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" aria-describedby="file_input_help" id="file_input" type="file">
-                                <p class="mt-1 text-sm text-gray-500 dark:text-gray-300" id="file_input_help">SVG, PNG, JPG or GIF (MAX. 800x400px).</p>
+                                <p class="mt-1 text-sm text-gray-500 dark:text-gray-300" id="file_input_help">JPG only (MAX. 1024kb).</p>
                             </div>
                         </div>
                         @error('file')
@@ -113,7 +113,7 @@
                         
                         <div class="sm:col-span-4 toggle-active mb-10">
                             <label for="description" class="block text-sm font-medium leading-6 text-gray-900 mb-2">Description</label>
-                            <div id="editor"></div>
+                            <div id="editor">{!! old('description') !!}</div>
                             <input type="hidden" name="description" id="hiddenInput">       
                         </div>
                         @error('description')
@@ -261,7 +261,13 @@
     var hiddenInput = document.querySelector('#hiddenInput');
 
     form.addEventListener('submit', function(e){
-        hiddenInput.value = quill.root.innerHTML;
+        var quillContent = quill.root.innerHTML;
+    
+        if (quillContent === '<p><br></p>') {
+            hiddenInput.value = '';
+        } else {
+            hiddenInput.value = quillContent;
+        }
     });
 </script>
 <script>

@@ -6,6 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     @vite('resources/css/app.css')
     <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
+    <link href="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.snow.css" rel="stylesheet" />
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.1/dist/cdn.min.js"></script>
     <title>Document</title>
 </head>
@@ -42,7 +43,17 @@
     <header class="bg-white shadow">
       <div class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
         <h1 class="text-3xl font-bold tracking-tight text-gray-900">{{ $master->name}}, {{  $master->year  }}, {{ $master->location  }}</h1>
-        <p>{!! $master->description !!}</p>
+        @if ($master->description)    
+            <div id="editor">
+                {!! $master->description !!}
+            </div>
+        @endif
+        @if ($master->file)    
+            <div>
+                {{-- <iframe src="{{ $master->file }}" frameborder="0"></iframe> --}}
+                <a href="{{ $master->file }}" class="text-blue-500 hover:underline">Download File</a>
+            </div>
+        @endif
       </div>
     </header>
     <main>
@@ -270,5 +281,19 @@
     </main>
   </div>
   <script src="https://cdn.jsdelivr.net/npm/flowbite@2.4.1/dist/flowbite.min.js"></script>
+  <!-- Include the Quill library -->
+<script src="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.js"></script>
+
+<!-- Initialize Quill editor -->
+<script>
+    const options = {
+        readOnly: true,
+        modules: {
+            toolbar: null
+        },
+        theme: 'snow'
+    };
+  const quill = new Quill('#editor', options);
+</script>
 </body>
 </html>

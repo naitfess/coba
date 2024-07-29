@@ -34,7 +34,7 @@ class MasterController extends Controller
                 'name' => 'required|unique:masters',
                 'year' => 'required',
                 'location' => 'required',
-                'file' => 'nullable|mimes:png,jpg,pdf,jpeg|max:1024',
+                'file' => 'nullable|mimes:pdf|max:1024',
                 'description' => 'nullable',
             ]);
         }
@@ -138,12 +138,17 @@ class MasterController extends Controller
 
     public function update(Request $request, Master $master)
     {   
-        $validatedData = $request->validate([
-            'name' => 'required',
+        $rules = [
             'year' => 'required',
             'location' => 'required',
             'description' => 'nullable',
-        ]);
+        ];
+        
+        if($request->name != $master->name){
+            $rules['name'] = 'required|unique:masters';
+        }
+
+        $validatedData =$request->validate($rules);
 
         Master::where('id', $master->id)
             ->update($validatedData);

@@ -66,6 +66,9 @@
                             <input type="text" value="{{ $master->name }}" name="name" id="name" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                             </div>
                         </div>
+                        @error('name')
+                            <p class="sm:col-span-4 mt-2 text-sm text-red-600 dark:text-red-500">{{ $message }}</p>
+                        @enderror
             
                         <div class="sm:col-span-4 toggle-active">
                             <label for="year" class="block text-sm font-medium leading-6 text-gray-900">Year</label>
@@ -73,6 +76,9 @@
                             <input id="year"  value="{{ $master->year }}" name="year" type="date" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                             </div>
                         </div>
+                        @error('year')
+                            <p class="sm:col-span-4 mt-2 text-sm text-red-600 dark:text-red-500">{{ $message }}</p>
+                        @enderror
 
                         <div class="sm:col-span-4 toggle-active">
                             <label for="location" class="block text-sm font-medium leading-6 text-gray-900">Location</label>
@@ -80,10 +86,13 @@
                             <input id="location"  value="{{ $master->location }}" name="location" type="text" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                             </div>
                         </div>
+                        @error('location')
+                            <p class="sm:col-span-4 mt-2 text-sm text-red-600 dark:text-red-500">{{ $message }}</p>
+                        @enderror
 
                         <div class="sm:col-span-4 toggle-active mb-10">
                           <label for="description" class="block text-sm font-medium leading-6 text-gray-900 mb-2">Description</label>
-                          <div id="editor">{!!  $master->description !!}</div>
+                          <div id="editor">{!! $master->description !!}</div>
                           <input type="hidden" name="description" id="hiddenInput">       
                         </div>
                         @error('description')
@@ -120,7 +129,13 @@
     var hiddenInput = document.querySelector('#hiddenInput');
 
     form.addEventListener('submit', function(e){
-        hiddenInput.value = quill.root.innerHTML;
+      var quillContent = quill.root.innerHTML;
+    
+      if (quillContent === '<p><br></p>') {
+          hiddenInput.value = '';
+      } else {
+          hiddenInput.value = quillContent;
+      }
     });
 </script>
 </body>

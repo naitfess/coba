@@ -23,7 +23,3 @@ Route::resource('/dashboard/football', FootballController::class);
 Route::resource('/dashboard/badminton', BadmintonController::class);
 
 
-'tes coba4';
-
-'coba3';
-
