@@ -32,6 +32,38 @@
               </div>
             </div>
           </div>
+          <div class="hidden md:block">
+            <div class="ml-4 flex items-center md:ml-6">
+                <!-- Profile dropdown -->
+                @auth
+                    <div class="relative ml-3">
+                        <div>
+                            <button type="button"  @click="isOpen = !isOpen" class="relative flex max-w-xs items-center rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800" id="user-menu-button" aria-expanded="false" aria-haspopup="true">
+                                <span class="absolute -inset-1.5"></span>
+                                <span class="sr-only">Open user menu</span>
+                                <img class="h-8 w-8 rounded-full" src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="">
+                            </button>
+                        </div>
+                        <div x-show="isOpen"
+                             x-transition:enter="transition ease-out duration-100 transform"
+                             x-transition:enter-start="opacity-0 scale-95"
+                             x-transition:enter-end="opacity-100 scale-100"
+                             x-transition:leave="transition ease-in duration-75 transform"
+                             x-transition:leave-start="opacity-100 scale-100"
+                             x-transition:leave-end="opacity-0 scale-95" class="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none" role="menu" aria-orientation="vertical" aria-labelledby="user-menu-button" tabindex="-1">
+                            <!-- Active: "bg-gray-100", Not Active: "" -->
+                            <p class="block px-4 py-2 text-sm text-gray-700">{{ auth()->user()->name }}</p>
+                            <form action="/logout" method="POST">
+                                @csrf
+                                <button type="submit"><p class="block px-4 py-2 text-sm text-gray-700">Sign out</p></button>
+                            </form>
+                        </div>
+                    </div>
+                @else
+                    {{-- {{ redirect('/login'); }} --}}
+                @endauth
+            </div>  
+          </div>
         </div>
       </div>
   
@@ -100,7 +132,7 @@
                         <p class="mt-2 text-sm text-red-600 dark:text-red-500">{{ $message }}</p>
                         @enderror
 
-                        <div class="sm:col-span-4 toggle-active">
+                        {{-- <div class="sm:col-span-4 toggle-active">
                             <div class="sm:col-span-4 toggle-active">                                
                                 <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white" for="file_input">Upload file</label>
                                 <input name="file" class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" aria-describedby="file_input_help" id="file_input" type="file">
@@ -109,16 +141,16 @@
                         </div>
                         @error('file')
                         <p class="mt-2 text-sm text-red-600 dark:text-red-500">{{ $message }}</p>
-                        @enderror
+                        @enderror --}}
                         
-                        <div class="sm:col-span-4 toggle-active mb-10">
+                        {{-- <div class="sm:col-span-4 toggle-active mb-10">
                             <label for="description" class="block text-sm font-medium leading-6 text-gray-900 mb-2">Description</label>
                             <div id="editor">{!! old('description') !!}</div>
                             <input type="hidden" name="description" id="hiddenInput">       
                         </div>
                         @error('description')
                         <p class="mt-2 text-sm text-red-600 dark:text-red-500">{{ $message }}</p>
-                        @enderror
+                        @enderror --}}
             
                         <div class="sm:col-span-3">
                             <label for="category_id" class="block text-sm font-medium leading-6 text-gray-900">Competition Category</label>

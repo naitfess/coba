@@ -33,22 +33,9 @@ class MasterController extends Controller
             $validatedData = $request->validate([
                 'name' => 'required|unique:masters',
                 'year' => 'required',
-                'location' => 'required',
-                'file' => 'nullable|mimes:pdf|max:1024',
-                'description' => 'nullable',
+                'location' => 'required'
             ]);
-        }
-
-        if($request->hasFile('file')){
-            $originName = $request->file('file')->getClientOriginalName();
-            $fileName = pathinfo($originName, PATHINFO_FILENAME);
-            $extension = $request->file('file')->getClientOriginalExtension();
-            $fileName = $fileName.'_'.time().'.'.$extension;
-            $request->file('file')->move(public_path('media'), $fileName);
-
-            $file = asset('media/'.$fileName);
-            $validatedData['file'] = $file;
-            // return response()->json(['filename' => $fileName, 'uploaded' => 1,'url' => $file]);
+            $validatedData['user_id'] = auth()->user()->id;
         }
 
         $request->validate([
