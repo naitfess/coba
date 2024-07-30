@@ -5,8 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     @vite('resources/css/app.css')
+    <script src="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.snow.css" rel="stylesheet">
     <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
-    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.1/dist/cdn.min.js"></script>
     <title>Document</title>
 </head>
 <body class="h-full">
@@ -22,7 +23,8 @@
               <div class="ml-10 flex items-baseline space-x-4">
                 <!-- Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" -->
                 <a href="/dashboard" class="rounded-md  px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white" aria-current="page">Dashboard</a>
-                <a href="/dashboard/create" class="rounded-md px-3 py-2 text-sm font-medium bg-gray-900 text-white">Create</a>
+                <a href="/dashboard/create" class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white">Create</a>
+                <a href="/files" class="rounded-md px-3 py-2 text-sm font-medium  bg-gray-900 text-white">Files</a>
               </div>
             </div>
           </div>
@@ -78,33 +80,44 @@
     </header>
     <main>
       <div class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-        <form method="POST" action="/dashboard/football/{{ $football->id }}">
-            @method('PUT')
+        <form action="/files" method="POST" enctype="multipart/form-data" id="form">
             @csrf
-            <div id="2" class="space-y-12 form-container">
-                <div class="border-b border-gray-900/10 pb-12">
-                    <h2 class="text-base font-semibold leading-7 text-gray-900">Edit Football Competition Details</h2>            
+            <div class="space-y-12">
+                <div class="pb-12">
+                    <h2 class="text-base font-semibold leading-7 text-gray-900">Your Files</h2>            
                     <div class="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
-                    <div class="sm:col-span-4">
-                        <label for="football-name" class="block text-sm font-medium leading-6 text-gray-900">Name</label>
-                        <div class="mt-2">
-                        <input type="text" value="{{ old('football-name') ?? $football->name }}" name="football-name" id="football-name" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                        
+                        {{-- if event new --}}
+                        <div class="sm:col-span-4 toggle-active">
+                            <label for="name" class="block text-sm font-medium leading-6 text-gray-900">File Name</label>
+                            <div class="mt-2">
+                            <input type="text" value="{{ old('name') }}" name="name" id="name" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                            </div>
                         </div>
-                    </div>
-                    @error('football-name')
-                        <p class="sm:col-span-4 mt-2 text-sm text-red-600 dark:text-red-500">{{ $message }}</p>
-                    @enderror
-            
-                    <div class="sm:col-span-4">
-                        <label for="football-category_umur" class="block text-sm font-medium leading-6 text-gray-900">Category</label>
-                        <div class="mt-2">
-                        <input id="football-category_umur" value="{{ old('football-category_umur') ?? $football->category_umur }}" name="football-category_umur" type="text" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
-                        </div>
-                    </div>
-                    @error('football-category_umur')
-                        <p class="sm:col-span-4 mt-2 text-sm text-red-600 dark:text-red-500">{{ $message }}</p>
-                    @enderror
+                        @error('name')
+                        <p class="mt-2 text-sm text-red-600 dark:text-red-500">{{ $message }}</p>
+                        @enderror
 
+                        <div class="sm:col-span-4 toggle-active">
+                            <div class="sm:col-span-4 toggle-active">                                
+                                <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white" for="file_input">Upload file</label>
+                                <input name="file" class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" aria-describedby="file_input_help" id="file_input" type="file">
+                                <p class="mt-1 text-sm text-gray-500 dark:text-gray-300" id="file_input_help">PDF only (MAX. 1024kb).</p>
+                            </div>
+                        </div>
+                        @error('file')
+                        <p class="mt-2 text-sm text-red-600 dark:text-red-500">{{ $message }}</p>
+                        @enderror
+                        
+                        <div class="sm:col-span-4 toggle-active mb-10">
+                            <label for="description" class="block text-sm font-medium leading-6 text-gray-900 mb-2">Description</label>
+                            <div id="editor">{!! old('description') !!}</div>
+                            <input type="hidden" name="description" id="hiddenInput">       
+                        </div>
+                        @error('description')
+                        <p class="mt-2 text-sm text-red-600 dark:text-red-500">{{ $message }}</p>
+                        @enderror
+            
                     </div>
                 </div>
             </div>
@@ -115,6 +128,37 @@
         </form>
       </div>
     </main>
-  </div>  
+  </div>
+<script>
+    const quill = new Quill('#editor', {
+        theme: 'snow',
+        modules: {
+        toolbar: [
+            [{ header: [1, 2, 3, 4, 5, 6, false] }],
+            [{ font: [] }],
+            ["bold", "italic"],
+            ["link", "blockquote", "code-block", "image"],
+            [{ list: "ordered" }, { list: "bullet" }],
+            [{ script: "sub" }, { script: "super" }],
+            [{ color: [] }, { background: [] }],
+        ]
+        },
+    });
+</script>  
+<script>
+  var form = document.querySelector("#form");
+  var hiddenInput = document.querySelector('#hiddenInput');
+
+    form.addEventListener('submit', function(e){
+        var quillContent = quill.root.innerHTML;
+
+        hiddenInput.value = quillContent;
+        if (quillContent === '<p><br></p>') {
+            hiddenInput.value = '';
+        } else {
+            hiddenInput.value = quillContent;
+        }
+    });
+</script>
 </body>
 </html>

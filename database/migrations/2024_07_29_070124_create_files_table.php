@@ -11,16 +11,18 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('masters', function (Blueprint $table) {
+        Schema::create('files', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->date('year');
-            $table->string('location');
             $table->longText('description')->nullable();
+            $table->string('path');
+            $table->string('size');
             $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('master_id')->nullable();
             $table->timestamps();
-            
+
             $table->foreign('user_id')->references('id')->on('users');
+            $table->foreign('master_id')->references('id')->on('masters');
         });
     }
 
@@ -29,6 +31,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('masters');
+        Schema::dropIfExists('files');
     }
 };
