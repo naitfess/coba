@@ -2,23 +2,43 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\File;
+use App\Models\Surat;
 use App\Models\Master;
 use App\Models\Football;
 use App\Models\Swimming;
 use App\Models\Badminton;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+
 class MasterController extends Controller
 {
     public function index()
     {
-        return redirect('/');
+        if (auth()->user()->email == 'admin@example.com') {
+            return view('index', [
+                'masters' => Master::filter(request(['search']))->latest()->paginate(5)->withQueryString(),
+                'details' => Surat::all(),
+                'search' => request('search')
+            ]);
+        }
+
+        return view('index', [
+            'masters' => Master::where('user_id', auth()->user()->id)->filter(request(['search']))->latest()->paginate(5)->withQueryString(),
+            'search' => request('search')
+        ]);
     }
 
     public function create()
     {
+        if (auth()->user()->email == 'admin@example.com') {
+            return view('create',[
+                'masters' => Master::all()
+            ]);
+        }
+
         return view('create',[
-            'masters' => Master::all()
+            'masters' => Master::where('user_id', auth()->user()->id)->get()
         ]);
     }
 
@@ -144,10 +164,19 @@ class MasterController extends Controller
 
     public function destroy($id)
     {
+        $updateFile = File::where('master_id', $id)->get();
+        foreach($updateFile as $file){
+            $file->update([
+                'master_id' => null,
+                'surat_id' => null
+            ]);
+        }
+
         Swimming::where('master_id', $id)->delete();
         Football::where('master_id', $id)->delete();
         Badminton::where('master_id', $id)->delete();
         Master::destroy($id);
+
 
         return redirect('/')->with('success', 'Data berhasil dihapus');
     }

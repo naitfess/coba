@@ -12,10 +12,10 @@ class File extends Model
 
     protected $fillable = [
         'name',
-        'description',
         'path',
         'size',
         'user_id',
+        'surat_id',
         'master_id'
     ];
 
@@ -27,6 +27,10 @@ class File extends Model
     public function master()
     {
         return $this->belongsTo(Master::class);
+    }
+
+    public function surat(){
+        return $this->belongsTo(Surat::class);
     }
 
     public function scopeFilter(Builder $query, array $filters): void

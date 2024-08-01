@@ -14,14 +14,15 @@ return new class extends Migration
         Schema::create('files', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->longText('description')->nullable();
             $table->string('path');
             $table->string('size');
             $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('surat_id')->nullable();
             $table->unsignedBigInteger('master_id')->nullable();
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users');
+            $table->foreign('surat_id')->references('id')->on('surats');
             $table->foreign('master_id')->references('id')->on('masters');
         });
     }
