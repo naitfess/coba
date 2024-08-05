@@ -7,6 +7,8 @@
     @vite('resources/css/app.css')
     <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.1/dist/cdn.min.js"></script>
+    {{-- vue --}}
+    <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
     <title>Document</title>
 </head> 
 <body class="h-full">
@@ -275,6 +277,8 @@
 
                     <section aria-labelledby="information-heading" class="mt-2">
                       <div class="relative overflow-x-auto">
+                        <form id="myForm" action="/files/upload" method="POST" enctype="multipart/form-data">
+                          @csrf
                         <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
                             <thead class="text-xs text-gray-900 uppercase dark:text-gray-400">
                                 <tr>
@@ -292,56 +296,13 @@
                                     </th>
                                 </tr>
                             </thead>
-                            <form action="/files/upload" method="POST" enctype="multipart/form-data">
-                              @csrf
                               <input type="hidden" id="master-id" name="master_id" value="">
-                                <tbody>
-                                    @foreach ($details as $index => $detail)
-                                      <tr class="bg-white dark:bg-gray-800">
-                                        <td class="px-6 py-4">
-                                          {{ $loop->iteration }}
-                                        </td>
-                                        <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                            {{ $detail->nama_surat }}
-                                        </th>
-                                          <td class="px-6 py-4">
-                                              <span id="file-uploaded-at-{{ $index }}" class="file-uploadedAt">-</span>
-                                          </td>
-                                          <td class="px-6 py-4">
-                                            <span id="file-name-{{ $index }}" class="file-name text-gray-700">-</span>
-                                          </td>
-                                          <td>
-                                            <button type="button" class="text-white bg-yellow-400 hover:bg-yellow-500 focus:outline-none focus:ring-4 focus:ring-yellow-300 font-medium rounded-xl text-sm px-2 py-2 text-center me-2 mb-2 dark:focus:ring-yellow-900">
-                                              <label for="file-upload-{{ $index }}" class="cursor-pointer">
-                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-                                                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-                                                </svg>                                                
-                                              </label>
-                                              <input id="file-upload-{{ $index }}" name="file[]" type="file" class="file-upload hidden">
-                                            </button>
-                                          </td>
-                                          <td>
-                                            <button type="button" class="text-white bg-blue-700 hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-700 font-medium rounded-xl text-sm px-2 py-2 text-center me-2 mb-2 dark:focus:ring-blue-900">
-                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-                                                  <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
-                                                  <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
-                                                </svg>                                                                                               
-                                            </button>
-                                          </td>
-                                          <td>
-                                            <a id="delete-link-{{ $index }}" href="">
-                                              <button id="button-delete-{{ $index }}" type="button" onclick="return confirm('Are you sure?')" class="text-white bg-red-700 hover:bg-red-800 focus:outline-none focus:ring-4 focus:ring-red-300 font-medium rounded-xl text-sm px-2 py-2 text-center me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900">
-                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-                                                  <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
-                                                </svg>                                              
-                                              </button>
-                                            </a>
-                                          </td>
-                                      </tr>
-                                    @endforeach
+                                <tbody id="data-container">
+                                  {{--  --}}
                                 </tbody>
-                              </table>
+                        </table>
                               <button type="submit" class="text-white bg-blue-700 hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 font-medium rounded-full text-sm px-5 py-2.5 text-center me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Save</button>
+                              <button type="button" class="modal-button-2 text-white bg-yellow-400 hover:bg-yellow-500 focus:outline-none focus:ring-4 focus:ring-yellow-300 font-medium rounded-full text-sm px-5 py-2.5 text-center me-2 mb-2 dark:bg-yellow-600 dark:hover:bg-yellow-700 dark:focus:ring-yellow-800">Tambah Surat</button>
                             </form>
                       </div>
                     </section>
@@ -353,11 +314,60 @@
         </div>
       </div>
       {{-- end modal --}}
+
+      {{-- modal surat baru --}}
+      <div id="modal-2" class="relative z-10 hidden" role="dialog" aria-modal="true">
+        <div class="fixed inset-0 hidden bg-gray-500 bg-opacity-75 transition-opacity md:block" aria-hidden="true"></div>
+          <div class="fixed inset-0 z-10 w-screen overflow-y-auto">
+          <div class="flex min-h-full items-stretch justify-center text-center md:items-center md:px-2 lg:px-4">
+            <div class="flex w-full transform text-left text-base transition md:my-8 md:max-w-2xl md:px-4 lg:max-w-xl">
+              <div class="relative flex w-full items-center overflow-hidden bg-white px-4 pb-8 pt-14 shadow-2xl sm:px-6 sm:pt-8 md:p-6 lg:p-8">
+                <button type="button" class="close-button-2 absolute right-4 top-4 text-gray-400 hover:text-gray-500 sm:right-6 sm:top-8 md:right-6 md:top-6 lg:right-8 lg:top-8">
+                  <span class="sr-only">Close</span>
+                  <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+
+                <div class="grid w-full grid-cols-1 items-start gap-x-6 gap-y-8 sm:grid-cols-12 lg:gap-x-8">
+                  <div class="sm:col-span-8 lg:col-span-12">
+                    <h2 class="text-2xl font-bold text-gray-900 sm:pr-12" id="modal-title"></h2>
+
+                    <section aria-labelledby="information-heading" class="mt-5">
+                      <div class="relative overflow-x-auto">
+                        <form action="/files/add" method="POST" enctype="multipart/form-data">
+                          @csrf
+                          <input type="hidden" id="master-id-2" name="master_id" value="">
+                          <label for="nama_surat" class="block text-sm font-medium leading-6 text-gray-900">Nama Surat</label>
+                          <div class="mt-2">
+                            <input type="text" value="{{ old('nama_surat') }}" name="nama_surat" id="nama_surat" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                          </div>
+                          @error('nama_surat')
+                            <p class="mt-2 text-sm text-red-600 dark:text-red-500">{{ $message }}</p>
+                          @enderror
+                          <div class="sm:col-span-4 toggle-active mt-5">                                
+                            <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white" for="file_input">Upload file</label>
+                            <input name="file" class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" aria-describedby="file_input_help" id="file_input" type="file">
+                            <p class="mt-1 text-sm text-gray-500 dark:text-gray-300" id="file_input_help">PDF only (MAX. 1024kb).</p>
+                          </div>
+                          <button type="submit">submit</button>
+                        </form>
+                      </div>
+                    </section>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      {{-- end modal surat baru --}}
    
     </main>
   </div>
   <script src="https://cdn.jsdelivr.net/npm/flowbite@2.4.1/dist/flowbite.min.js"></script>
   <script>
+    // modal 1
     const modal = document.querySelector('#modal');
     const modalButton = document.querySelectorAll('.modal-button');
     const closeButton = document.querySelector('.close-button');
@@ -369,73 +379,155 @@
           const masterId = data[1];
           document.querySelector('#modal-title').textContent = 'Event : ' + name;
           document.querySelector('#master-id').value = masterId;
-          
+          document.querySelector('#master-id-2').value = masterId;
           await fetchData(masterId);
           modal.classList.remove('hidden');
+
+          document.querySelectorAll('input[type="file"]').forEach(input => {
+          input.addEventListener('change', function() {
+              const fileName = this.files[0] ? this.files[0].name : 'No file chosen';
+              const maxLength = 30;
+              const displayName = fileName.length > maxLength ? fileName.substr(0, maxLength) + '...' : fileName;
+              const index = this.id.split('-').pop();
+              document.getElementById('file-name-' + index).textContent = displayName;
+
+              let surat = document.getElementById('id-surat-' + index);
+              if (surat) {
+                let idSurat = surat.getAttribute('data-id');
+                surat.value = idSurat;
+              }
+              });
+          });
         });
     });
 
     closeButton.addEventListener('click', () => {
       modal.classList.add('hidden');
+      const dataContainer = document.getElementById('data-container');
+      dataContainer.innerHTML = '';
     });
 
-    document.querySelectorAll('input[type="file"]').forEach(input => {
-        input.addEventListener('change', function() {
-            const fileName = this.files[0] ? this.files[0].name : 'No file chosen';
-            const maxLength = 30;
-            const displayName = fileName.length > maxLength ? fileName.substr(0, maxLength) + '...' : fileName;
-            const index = this.id.split('-').pop();
-            document.getElementById('file-name-' + index).textContent = displayName;
+    //modal 2
+    const modal2 = document.querySelector('#modal-2');
+    const modalButton2 = document.querySelector('.modal-button-2');
+    const closeButton2 = document.querySelector('.close-button-2');
+    
+    modalButton2.addEventListener('click', () => {
+      modal2.classList.remove('hidden');
+      modal.classList.add('hidden');
+      const dataContainer = document.getElementById('data-container');
+      dataContainer.innerHTML = '';
+    });
+
+    closeButton2.addEventListener('click', () => {
+      modal2.classList.add('hidden');
+    });
+    
+    async function fetchData(masterId) {
+    const apiUrl = `/files/${masterId}`;
+    try {
+      const response = await fetch(apiUrl);
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      const data = await response.json();
+
+      const dataContainer = document.getElementById('data-container');
+      dataContainer.innerHTML = '';
+
+      if (!data.details || data.details.length === 0) {
+        const itemHTML = `
+          <td colspan="4" class="px-6 py-4 text-center">
+            <h1>Belum ada surat</h1>
+          </td>
+        `;
+        dataContainer.insertAdjacentHTML('beforeend', itemHTML);
+      } else {
+        data.details.forEach((item, index) => {
+          const itemHTML = `
+            <tr class="bg-white dark:bg-gray-800">
+              <td class="px-6 py-4">${index + 1}</td>
+              <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                ${item.nama_surat}
+              </th>
+              <td class="px-6 py-4">
+                <span id="file-uploaded-at-${index}" class="file-uploadedAt">-</span>
+              </td>
+              <td class="px-6 py-4">
+                <span id="file-name-${index}" class="file-name text-gray-700">-</span>
+              </td>
+              <td>
+                <button type="button" class="text-white bg-yellow-400 hover:bg-yellow-500 focus:outline-none focus:ring-4 focus:ring-yellow-300 font-medium rounded-xl text-sm px-2 py-2 text-center me-2 mb-2 dark:focus:ring-yellow-900">
+                  <label for="file-upload-${index}" class="cursor-pointer">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                    </svg>                                                
+                  </label>
+                  <input id="file-upload-${index}" name="files[]" type="file" class="file-upload hidden">
+                  <input id="id-surat-${index}" type="hidden" name="surat_id[]" data-id="${item.id}">
+                </button>
+              </td>
+              <td>
+                <a id="show-link-${index}" href="" target=_blank style="pointer-events: none;">
+                  <button type="button" class="text-white bg-blue-700 hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-700 font-medium rounded-xl text-sm px-2 py-2 text-center me-2 mb-2 dark:focus:ring-blue-900">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                    </svg>                                                                                               
+                  </button>
+                </a>
+              </td>
+              <td>
+                <a id="delete-link-${index}" href="/#">
+                  <button id="button-delete-${index}" type="button" onclick="return confirm('Are you sure?')" class="text-white bg-red-700 hover:bg-red-800 focus:outline-none focus:ring-4 focus:ring-red-300 font-medium rounded-xl text-sm px-2 py-2 text-center me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
+                    </svg>                                              
+                  </button>
+                </a>
+              </td>
+            </tr>
+          `;
+          dataContainer.insertAdjacentHTML('beforeend', itemHTML);
         });
-    });
 
-    async function fetchData(masterId) {  
-            const apiUrl = `/files/${masterId}`;
-            try {
-            const response = await fetch(apiUrl);
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
+        data.details.forEach((item, index) => {
+          const file = data.files.find(file => file.surat_id === item.id);
+          if (file) {
+            const fileNameElement = document.getElementById(`file-name-${index}`);
+            const fileUploadedAtElement = document.getElementById(`file-uploaded-at-${index}`);
+            const deleteFile = document.getElementById(`delete-link-${index}`);
+            const showFile = document.getElementById(`show-link-${index}`);
+            const displayName = file.name.length > 30 ? file.name.substr(0, 30) + '...' : file.name;
+            const date = file.created_at.split('T')[0];
+            const selectedFile = file.id;
+            const selectedSurat = file.surat_id;
+
+            if (fileNameElement && fileUploadedAtElement) {
+              fileNameElement.textContent = displayName;
+              fileUploadedAtElement.textContent = date;
+              deleteFile.href = `files/delete/${selectedSurat}/${selectedFile}`;
+              showFile.href = `files/view-pdf/${file.name}`;
+              showFile.style.pointerEvents = 'auto';
+            } else {
+              console.log(`Element not found: file-name-${index} or file-uploaded-at-${index}`);
             }
-            const data = await response.json();
-
-            const fileName = document.querySelectorAll('.file-name');
-
-            let lomba;
-            fileName.forEach((name, index) => {
-                switch(index){
-                  case 0:
-                    lomba = 'renang';
-                    break;
-                  case 1:
-                    lomba = 'bola';
-                    break;
-                  case 2:
-                    lomba = 'badminton';
-                    break;
-                }
-
-                if(data[lomba] === null){
-                  document.getElementById('file-name-' + index).textContent = '-';
-                  document.getElementById('file-uploaded-at-' + index).textContent = '-';
-                  document.getElementById('button-delete-' + index).disabled = true;
-                } else {
-                  let file = data[lomba].name;
-                  let displayName = file.length > 30 ? file.substr(0, 30) + '...' : file;
-  
-                  let date = data[lomba].created_at.split('T')[0];
-  
-                  document.getElementById('file-name-' + index).textContent = displayName;
-                  document.getElementById('file-uploaded-at-' + index).textContent = date;
-                  document.getElementById('delete-link-' + index).href = `/files/delete/${data[lomba].id}`;
-                  
-                }
-
-            });
-
-          } catch (error) {
-              console.error('There was a problem with the fetch operation:', error);
+          } else{
+            const deleteFile = document.getElementById(`delete-link-${index}`);
+            deleteFile.href = `files/delete/${item.id}`;
           }
-        }
+        });
+      }
+    } catch (error) {
+      console.error('There was a problem with the fetch operation:', error);
+    }
+  }
+
+
+    
+</script>
+<script>
+  
 </script>
 </body>
 </html>

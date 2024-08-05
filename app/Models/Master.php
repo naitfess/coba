@@ -41,6 +41,11 @@ class Master extends Model
     {
         return $this->hasMany(File::class);
     }
+    
+    public function surat()
+    {
+        return $this->hasMany(Surat::class);
+    }
 
     public function scopeFilter(Builder $query, array $filters): void
     {

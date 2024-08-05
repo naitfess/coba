@@ -14,7 +14,10 @@ return new class extends Migration
         Schema::create('surats', function (Blueprint $table) {
             $table->id();
             $table->string('nama_surat');
+            $table->unsignedBigInteger('master_id');
             $table->timestamps();
+
+            $table->foreign('master_id')->references('id')->on('masters')->onDelete('cascade');
         });
     }
 

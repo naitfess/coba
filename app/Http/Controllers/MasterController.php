@@ -18,7 +18,6 @@ class MasterController extends Controller
         if (auth()->user()->email == 'admin@example.com') {
             return view('index', [
                 'masters' => Master::filter(request(['search']))->latest()->paginate(5)->withQueryString(),
-                'details' => Surat::all(),
                 'search' => request('search')
             ]);
         }
